@@ -1,0 +1,70 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+	echo "Provide subcommand"
+	exit
+fi
+
+if [ $1 == "--version" ]; then
+	echo "v0.1.0"
+fi
+
+
+if [ $1 == "--help" ]; then
+	echo help section
+fi
+
+
+if [ $1 == "cpu" ]; then
+	if [ $# == 2 ] && [ $2 == "getinfo" ] ; then
+		lscpu
+	else
+		echo "Invalid Option"
+	fi
+fi
+
+if [ $1 == "user" ]; then
+	if [ $# -lt 2 ]; then
+		echo "Please provide option"
+		exit
+	fi
+
+	if [ $# == 3 ] && [ $2 == "create" ]; then
+		useradd $3
+	else 
+		if [ $# -gt 1 ] && [ $2 == "list" ]; then
+			if [ $# == 3 ] && [ $3 == "--sudo-only" ] ; then
+				echo root
+				cat /etc/group | grep wheel | cut -d ":" -f 4
+			else
+				cat /etc/passwd | cut -d ":" -f 1
+			fi
+		else
+			echo "Error"
+		fi
+	fi
+fi
+
+if [ $1 == "file" ]; then
+	if [ $# -gt 2 ] && [ $2 == "getinfo" ] ; then
+		ls ${@: -1} > /dev/null 2> /dev/null
+			
+		if [ $? != 0 ]; then
+			echo "File ${@: -1} do not exist"
+		else
+			printf "%10s \t" Name:
+			echo $(ls ${@: -1})
+			printf "%10s \t" Permissions:
+			ls -la ${@: -1} | cut -d " " -f 1
+			printf "%10s \t" "Size(B):"
+			ls -la ${@: -1} | cut -d " " -f 5
+			printf "%10s \t" Owner:
+			ls -la ${@: -1} | cut -d " " -f 3
+			printf "%10s \t" Modify:
+			stat ${@: -1} | grep Modify | cut -d " " -f 2,3,4
+		fi
+	else
+		echo "Invalid Option: $2 (Do you mean $0 $1 getinfo)"
+	fi
+	exit
+fi
