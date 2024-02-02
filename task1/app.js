@@ -9,8 +9,8 @@ const mongoose=require('mongoose')
 mongoose.connect('mongodb://localhost:27017/xenostack')
 try{
     console.log("mongodb connected")
-}catch(err){
-    console.log(err)
+}catch(error){
+    console.log(error)
 }
 
 app.use(express.json())
