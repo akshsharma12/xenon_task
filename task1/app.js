@@ -21,7 +21,7 @@ app.use(express.urlencoded({extended:false}))
 app.use(bodyParser.json())
 app.use(router)
 
-
+console.log("hee")
 app.get("/",(req,res)=>{
     res.render("home") //homee
 })
